@@ -15,6 +15,50 @@
     </form>
     <div id="result"></div>
     <button id="start-process">Iniciar Processamento</button> <!-- Novo botão para iniciar o script -->
-    <script src="script.js"></script>
-</body>
-</html>
+    <button id="send-to-google-sheets">Enviar CNPJs para Google Sheets</button> <!-- Novo botão para enviar CNPJs -->
+
+    <script>
+        // Função para enviar CNPJs para o Google Sheets
+        async function enviarCNPJsParaGoogleSheets(cnpjs) {
+            const API_KEY = 'AIzaSyDKC5kUy2IQOnatgav-YU4bWBnvHAK6jKk';
+            const SPREADSHEET_ID = '1YaBUfJI6Gaq0Vw3BIGjKXpmrrWvr-gekh6mvOkkap_U'; // ID da sua planilha
+            const RANGE = 'Pagina1!A:A'; // Altere conforme necessário
+
+            const body = {
+                range: RANGE,
+                majorDimension: 'COLUMNS',
+                values: [cnpjs] // Adiciona os CNPJs como uma linha na coluna A
+            };
+
+            const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?valueInputOption=RAW&key=${API_KEY}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (response.ok) {
+                console.log('CNPJs enviados para o Google Sheets com sucesso.');
+            } else {
+                console.error('Erro ao enviar CNPJs para o Google Sheets:', await response.text());
+            }
+        }
+
+        // Função para capturar os CNPJs e enviar
+        function enviarCNPJs() {
+            const cnpjs = JSON.parse(localStorage.getItem("listaCNPJs"));
+            if (cnpjs && cnpjs.length > 0) {
+                enviarCNPJsParaGoogleSheets(cnpjs);
+            } else {
+                console.error('Nenhum CNPJ encontrado no localStorage.');
+            }
+        }
+
+        // Adiciona um listener para o botão de envio
+        document.getElementById('send-to-google-sheets').addEventListener('click', enviarCNPJs);
+
+        // Exemplo para salvar um CNPJ no localStorage ao enviar o formulário
+        document.getElementById('cnpj-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio do formulário
+            cons

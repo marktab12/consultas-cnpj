@@ -1,16 +1,12 @@
-document.getElementById("cnpj-form").addEventListener("submit", async function(event) {
-    event.preventDefault(); // Evita o recarregamento da página
+document.getElementById('start-process').addEventListener('click', function(event) {
+    event.preventDefault(); // Evita que o formulário seja enviado
 
-    const cnpj = document.getElementById("cnpj").value; // Obtém o CNPJ inserido
-    document.getElementById("result").innerHTML = "Consultando...";
+    const cnpjInput = document.getElementById('cnpj').value; // Pega o valor do campo de entrada
+    const cnpjs = cnpjInput.split(',').map(cnpj => cnpj.trim()); // Divide os CNPJs em um array
 
-    // Chame a função de consulta aqui
-    const resultado = await consultarCNPJ(cnpj);
-    document.getElementById("result").innerHTML = resultado;
+    // Salva os CNPJs no localStorage para que o Tampermonkey possa acessá-los
+    localStorage.setItem('listaCNPJs', JSON.stringify(cnpjs));
+
+    console.log('CNPJs salvos:', cnpjs);
+    alert('CNPJs salvos, inicie o processo no Tampermonkey!');
 });
-
-async function consultarCNPJ(cnpj) {
-    // Aqui você deve implementar a lógica de consulta ao script do Tampermonkey
-    // Para simplificação, retornaremos um resultado fictício.
-    return `Resultado da consulta para CNPJ ${cnpj}`;
-}

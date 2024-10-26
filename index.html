@@ -14,8 +14,8 @@
         <button type="submit">Consultar</button>
     </form>
     <div id="result"></div>
-    <button id="start-process">Iniciar Processamento</button> <!-- Novo botão para iniciar o script -->
-    <button id="send-to-google-sheets">Enviar CNPJs para Google Sheets</button> <!-- Novo botão para enviar CNPJs -->
+    <button id="start-process">Iniciar Processamento</button> <!-- Botão para iniciar o script -->
+    <button id="send-to-google-sheets">Enviar CNPJs para Google Sheets</button> <!-- Botão para enviar CNPJs -->
 
     <script>
         // Função para enviar CNPJs para o Google Sheets
@@ -61,4 +61,31 @@
         // Exemplo para salvar um CNPJ no localStorage ao enviar o formulário
         document.getElementById('cnpj-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Impede o envio do formulário
-            cons
+            const cnpjInput = document.getElementById('cnpj');
+            let listaCNPJs = JSON.parse(localStorage.getItem("listaCNPJs")) || [];
+
+            // Adiciona o novo CNPJ à lista
+            listaCNPJs.push(cnpjInput.value);
+            localStorage.setItem("listaCNPJs", JSON.stringify(listaCNPJs));
+
+            // Limpa o campo de entrada
+            cnpjInput.value = '';
+            console.log(`CNPJ salvo: ${cnpjInput.value}`);
+            console.log(`CNPJs armazenados: ${JSON.stringify(listaCNPJs)}`);
+        });
+
+        // Listener para o botão de iniciar processamento
+        document.getElementById('start-process').addEventListener('click', function() {
+            const cnpjs = JSON.parse(localStorage.getItem("listaCNPJs"));
+            if (cnpjs && cnpjs.length > 0) {
+                // Aqui você pode chamar a função de processamento que você já tem
+                // processarCNPJs(cnpjs); // Substitua pelo seu método de processamento
+                console.log('Iniciando processamento dos CNPJs...');
+                enviarCNPJsParaGoogleSheets(cnpjs); // Envia os CNPJs para o Google Sheets
+            } else {
+                console.error('Nenhum CNPJ encontrado no localStorage para processamento.');
+            }
+        });
+    </script>
+</body>
+</html>
